@@ -26,12 +26,15 @@ Official Showdown servers can be embedded in an iframe (`psim.us`), but the ifra
 
 The app is silent: no music, no sound effects. Reduced-motion is respected.
 
-Without `VITE_BACKEND_URL`, the frontend uses a public PeerJS relay where the room creator is the authoritative host. This needs no account, but it is peer-hosted rather than a dedicated server; set `VITE_BACKEND_URL` to use the included WebSocket backend instead.
+Without `VITE_BACKEND_URL`, the frontend uses a public PeerJS relay where the room creator is the authoritative host. This needs no account, but it is peer-hosted rather than a dedicated server. To use the included WebSocket backend instead, open the site with `?ws=wss://your-backend.example` (the value is remembered in localStorage) or set `VITE_BACKEND_URL` at build time. A `ws://` backend only works from a non-HTTPS origin; the GitHub Pages site requires `wss://`.
 
 ## Deployment
-Frontend: push to `main`; `.github/workflows/deploy.yml` builds and deploys to GitHub Pages at `/pokemon-casino/`. Set `VITE_BACKEND_URL` in the workflow to your `wss://` backend before publishing.
+Frontend: push to `main`; `.github/workflows/deploy.yml` builds and deploys to GitHub Pages at `/pokemon-casino/`. Pages is set to the `workflow` build type, so the workflow artifact is what goes live. No `VITE_BACKEND_URL` is set, so the default is the peer relay.
 
 Backend: deploy `backend/` to Render/Railway/Fly.io/VPS with `PORT`, `ALLOWED_ORIGIN` and `ROOM_TTL_MINUTES`. GitHub Pages cannot run it. Use WSS in production and restrict CORS to your Pages origin. Health endpoint: `GET /health`.
+
+## Play with a friend
+Open `https://arrojchino.github.io/pokemon-casino/`. Player 1 creates a room and shares the link or the room code. Player 2 opens the link, enters a name and joins. The creator hosts the room over the PeerJS relay, so no account or server is required. If the relay is unavailable in your network, run the backend locally, expose it over `wss://` (for example with `cloudflared tunnel --url http://127.0.0.1:8787`), and open the site with `?ws=wss://<tunnel>/`.
 
 ## Limits
 - Backend deployment needs an account/credentials; this repo contains the code and configuration, not a live hosted server.
