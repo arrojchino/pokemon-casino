@@ -1,33 +1,34 @@
-name: Deploy frontend to GitHub Pages
+name: Build and deploy frontend to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['frontend/**', '.github/workflows/deploy.yml']
-permissions: { contents: read, pages: write, id-token: write }
-concurrency: { group: pages, cancel-in-progress: true }
+permissions:
+  contents: write
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
         working-directory: frontend
       - run: npm run build
         working-directory: frontend
         env:
-          VITE_BASE_PATH: /pokemon-casino/
-          VITE_BACKEND_URL: wss://YOUR-BACKEND.onrender.com
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with: { path: frontend/dist }
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: "${{ steps.deploy.outputs.page_url }}"
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL || 'ws://127.0.0.1:8787' }}
+      - name: Publish build to repository root for Pages
+        run: |
+          cp -r frontend/dist/. ./
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -f index.html assets
+          git commit -m 'Deploy frontend to Pages [skip ci]' || echo 'no changes'
+          git push origin HEAD:main
