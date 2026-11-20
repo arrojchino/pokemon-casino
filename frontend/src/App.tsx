@@ -113,7 +113,7 @@ export function App() {
         <div className="divider">or join a friend</div>
         <div className="row"><input placeholder="YOUR NAME" value={joinName} onChange={e => setJoinName(e.target.value)} maxLength={24} /><input placeholder="ROOM CODE" value={joinCode} onChange={e => setJoinCode(e.target.value)} /><button onClick={() => join(joinCode, joinName)} disabled={!connected || !joinCode}>Join</button></div>
         {error && <p className="error">{error}</p>}
-        <small>{useBackend ? 'Backend' : 'Peer relay'} {connected ? 'connected' : 'offline'} · no account · no music · add ?ws=wss://… for your own backend</small>
+        <small>{useBackend ? 'Backend' : 'Peer relay'} {connected ? 'connected' : 'offline'} · no account · no music</small>
       </section>
     </div>
   </div>;
