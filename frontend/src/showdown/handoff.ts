@@ -2,7 +2,6 @@ import type { Pokemon } from '../pokemon/pool.js';
 import { teamImport } from '../game/logic.js';
 
 export function showdownUrl() { return 'https://play.pokemonshowdown.com/'; }
-export function psimEmbedUrl() { return 'https://psim.us/'; }
 
 export async function copy(value: string) {
   try { await navigator.clipboard.writeText(value); return true; }

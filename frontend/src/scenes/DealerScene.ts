@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-/** Animated 8-frame atlas dealer on a subdivided plane. No rings over the character. */
+/** Animated 8-frame goth oracle on a subdivided plane. No rings over the character. */
 export class DealerScene {
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
@@ -24,7 +24,8 @@ export class DealerScene {
     this.texture.colorSpace = THREE.SRGBColorSpace;
     const paint = (i: number) => {
       ctx.clearRect(0, 0, 600, 400);
-      ctx.drawImage(atlas, (i % 4) * 444, Math.floor(i / 4) * 444, 444, 444, 0, 54, 600, 292);
+      // Fill the panel edge to edge: crop the 444px frame vertically instead of letterboxing.
+      ctx.drawImage(atlas, (i % 4) * 444, Math.floor(i / 4) * 444 + 74, 444, 296, 0, 0, 600, 400);
       this.texture.needsUpdate = true;
     };
     paint(0);
@@ -36,9 +37,9 @@ export class DealerScene {
     this.base = (this.geom.attributes.position.array as Float32Array).slice();
     this.mesh = new THREE.Mesh(this.geom, new THREE.MeshBasicMaterial({ map: this.texture }));
     this.mesh.position.z = -.25; this.scene.add(this.mesh);
-    const warm = new THREE.PointLight(0xffbe63, 9, 8); warm.position.set(-2, 1.4, 2.2); this.scene.add(warm);
-    const pink = new THREE.PointLight(0xff42b3, 6, 7); pink.position.set(2.1, -.7, 1.8); this.scene.add(pink);
-    const cyan = new THREE.PointLight(0x4deaff, 5, 7); cyan.position.set(-1.8, -1.2, 1.6); this.scene.add(cyan);
+    const warm = new THREE.PointLight(0xa45cff, 9, 8); warm.position.set(-2, 1.4, 2.2); this.scene.add(warm);
+    const pink = new THREE.PointLight(0xff2e63, 7, 7); pink.position.set(2.1, -.7, 1.8); this.scene.add(pink);
+    const cyan = new THREE.PointLight(0x8a6bff, 6, 7); cyan.position.set(-1.8, -1.2, 1.6); this.scene.add(cyan);
     this.scene.add(new THREE.AmbientLight(0xffffff, .9));
     this.onPointer = (e: PointerEvent) => {
       const r = host.getBoundingClientRect();
