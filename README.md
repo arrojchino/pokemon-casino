@@ -26,6 +26,8 @@ Official Showdown servers can be embedded in an iframe (`psim.us`), but the ifra
 
 The app is silent: no music, no sound effects. Reduced-motion is respected.
 
+Without `VITE_BACKEND_URL`, the frontend uses a public PeerJS relay where the room creator is the authoritative host. This needs no account, but it is peer-hosted rather than a dedicated server; set `VITE_BACKEND_URL` to use the included WebSocket backend instead.
+
 ## Deployment
 Frontend: push to `main`; `.github/workflows/deploy.yml` builds and deploys to GitHub Pages at `/pokemon-casino/`. Set `VITE_BACKEND_URL` in the workflow to your `wss://` backend before publishing.
 
