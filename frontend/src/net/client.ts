@@ -11,7 +11,7 @@ export type RoomState = {
   history: { game: number; winner: number; teams: [Pokemon[], Pokemon[]] }[];
 };
 
-const URL = import.meta.env.VITE_BACKEND_URL || 'ws://127.0.0.1:8787';
+const URL = import.meta.env.VITE_BACKEND_URL || '';
 
 export function useCasinoSocket() {
   const [room, setRoom] = useState<RoomState | null>(null);
@@ -39,6 +39,7 @@ export function useCasinoSocket() {
   }, []);
 
   useEffect(() => {
+    if (!URL) return;
     let saved: { code: string; token: string } | null = null;
     try { saved = JSON.parse(localStorage.getItem('pc-session') || 'null'); } catch { /* ignore */ }
     const ws = open(ready => {
@@ -48,6 +49,7 @@ export function useCasinoSocket() {
   }, [open]);
 
   const send = useCallback((msg: object) => {
+    if (!URL) { setError('No backend configured'); return; }
     if (wsRef.current?.readyState === WebSocket.OPEN) wsRef.current.send(JSON.stringify(msg));
     else setError('Backend offline — start the WebSocket server.');
   }, []);
