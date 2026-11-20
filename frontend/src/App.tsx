@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCasinoSocket } from './net/client.js';
+import { useCasinoSocket, backendUrl } from './net/client.js';
 import { usePeerSocket } from './net/peerClient.js';
 import { DealerScene } from './scenes/DealerScene.js';
 import { CoinScene } from './scenes/CoinScene.js';
@@ -23,7 +23,7 @@ function Teams({ teams, titles }: { teams: [Pokemon[], Pokemon[]]; titles: strin
 export function App() {
   const wsNet = useCasinoSocket();
   const peerNet = usePeerSocket();
-  const useBackend = Boolean((import.meta.env.VITE_BACKEND_URL || '').trim());
+  const useBackend = Boolean(backendUrl());
   const { room, seat, connected, error, create, join, send, setError } = useBackend ? wsNet : peerNet;
   const [name, setName] = useState('Player 1');
   const [joinName, setJoinName] = useState('Player 2');
@@ -84,7 +84,7 @@ export function App() {
       <div className="divider">or join a friend</div>
       <div className="row"><input placeholder="YOUR NAME" value={joinName} onChange={e => setJoinName(e.target.value)} maxLength={24} /><input placeholder="ROOM CODE" value={joinCode} onChange={e => setJoinCode(e.target.value)} /><button onClick={() => join(joinCode, joinName)} disabled={!connected || !joinCode}>Join</button></div>
       {error && <p className="error">{error}</p>}
-      <small>Backend {connected ? 'connected' : 'offline'} · silent by design · no music or sound effects</small>
+      <small>{useBackend ? 'Backend' : 'Peer relay'} {connected ? 'connected' : 'offline'} · silent by design · no music or sound effects · add ?ws=wss://… to use your own backend</small>
     </div>
   </div>;
 

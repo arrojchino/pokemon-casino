@@ -11,7 +11,11 @@ export type RoomState = {
   history: { game: number; winner: number; teams: [Pokemon[], Pokemon[]] }[];
 };
 
-const URL = import.meta.env.VITE_BACKEND_URL || '';
+export const backendUrl = () => {
+  const q = new URLSearchParams(location.search).get('ws');
+  return (import.meta.env.VITE_BACKEND_URL || '').trim() || q || localStorage.getItem('pc-backend') || '';
+};
+const URL = backendUrl();
 
 export function useCasinoSocket() {
   const [room, setRoom] = useState<RoomState | null>(null);

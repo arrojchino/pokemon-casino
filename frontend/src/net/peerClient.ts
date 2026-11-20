@@ -102,6 +102,7 @@ export function usePeerSocket() {
       conn.on('open', () => publish());
     });
     peer.on('error', e => setError('Relay: ' + String((e as Error).message)));
+    peer.on('disconnected', () => { setError('Relay disconnected — retrying'); try { peer.reconnect(); } catch { /* ignore */ } });
     return () => { conns.current.forEach(c => c.close()); peer.destroy(); };
   }, [apply, publish]);
 
